@@ -10,7 +10,10 @@ Add this repo as submodule to your project (or simply copy the contents) and add
 `kfile.js`:
 
 ```js
-global.noKrinkPlease = true; // needed to not add "krink" as subproject when evaluating the kfile from krass
-let krass = await project.addProject('path/to/krass');  // Assumes your project var is called "project"
+// needed to not add "krink" as subproject when evaluating the kfile from krass
+global.noKrinkPlease = true;
+
+// Assumes your project var is called "project"
+let krass = await project.addProject('path/to/krass');
 krass.useAsLibrary();
 ```
