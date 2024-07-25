@@ -31,9 +31,11 @@ typedef void (*krass_draw_callback_t)(int id, float x, float y, void *data);
 /**
  * @brief Initialize an empty context
  *
+ * @param reserve How many quads to reserve
+ *
  * @return krass_ctx_t*
  */
-krass_ctx_t *krass_init(void);
+krass_ctx_t *krass_init(int reserve);
 
 /**
  * @brief Destroy a previously initialized context
@@ -51,7 +53,8 @@ void krass_destroy(krass_ctx_t *ctx);
 void krass_finalize(krass_ctx_t *ctx);
 
 /**
- * @brief Call until it returns `false` after finalizing a context
+ * @brief Call until it returns `false` after finalizing a context. Needs to be called inside a
+ * `kinc_g4_begin/end` block!
  *
  * @param ctx
  * @return true
