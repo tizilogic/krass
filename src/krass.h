@@ -32,10 +32,11 @@ typedef void (*krass_draw_callback_t)(int id, float x, float y, void *data);
  * @brief Initialize an empty context
  *
  * @param reserve How many quads to reserve
+ * @param step How many quads to process per call to tick
  *
  * @return krass_ctx_t*
  */
-krass_ctx_t *krass_init(int reserve);
+krass_ctx_t *krass_init(int reserve, int step);
 
 /**
  * @brief Destroy a previously initialized context
