@@ -74,37 +74,39 @@ static bool internal_fa_place(free_area_t *a, kr_vec2_t *pos, float w, float h) 
 	for (int current = 0; current < a->top; ++current) {
 		if (a->rects[current].w >= w + 1 && a->rects[current].h >= h + 1) {
 			float fa_left = a->rects[current].x;
-			float fa_right = a->rects[current].x + a->rects[current].w + 1;
+			float fa_right = a->rects[current].x + a->rects[current].w;
 			float fa_top = a->rects[current].y;
-			float fa_bottom = a->rects[current].y + a->rects[current].h + 1;
+			float fa_bottom = a->rects[current].y + a->rects[current].h;
+			float re_right = fa_left + w + 1;
+			float re_bottom = fa_top + h + 1;
 			pos->x = fa_left;
 			pos->y = fa_top;
 
-			if (w + KRASS_MIN_FREE >= a->rects[current].w &&
-			    h + KRASS_MIN_FREE >= a->rects[current].h) {
+			if (re_right + KRASS_MIN_FREE >= fa_right &&
+			    re_bottom + KRASS_MIN_FREE >= fa_bottom) {
 				// Consume entire rect
 				internal_fa_shift_left(a, current);
 			}
-			else if (w + KRASS_MIN_FREE >= a->rects[current].w) {
+			else if (re_right + KRASS_MIN_FREE >= fa_right) {
 				// Merge down
-				a->rects[current].y = fa_bottom;
+				a->rects[current].y = re_bottom;
 				a->rects[current].h -= h + 1;
 			}
-			else if (h + KRASS_MIN_FREE >= a->rects[current].h) {
+			else if (re_bottom + KRASS_MIN_FREE >= fa_bottom) {
 				// Merge right
-				a->rects[current].x = fa_right;
+				a->rects[current].x = re_right;
 				a->rects[current].w -= w + 1;
 			}
 			else {
 				// Split into two
 				internal_fa_grow(a);
 				float prev_h = a->rects[current].h;
-				a->rects[current].y = fa_bottom;
+				a->rects[current].y = re_bottom;
 				a->rects[current].h -= h + 1;
-				a->rects[a->top].x = fa_right;
+				a->rects[a->top].x = re_right;
 				a->rects[a->top].y = fa_top;
 				a->rects[a->top].w = a->rects[current].w - w - 1;
-				a->rects[a->top].h = prev_h - h - 1;
+				a->rects[a->top].h = h + 1;
 				++a->top;
 			}
 			return true;
