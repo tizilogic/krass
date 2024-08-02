@@ -50,13 +50,14 @@ struct krass_ctx {
 	krass_canvas_t canvas;
 	krass_asset_t *assets;
 	kinc_g4_render_target_t target;
-	int top, cap, cursor, step;
+	int top, cap, cursor, step, mipmap_levels;
+	bool first;
 #ifdef KR_FULL_RGBA_FONTS
 	int font_count;
 #endif
 };
 
-krass_ctx_t *krass_init(int reserve, int step) {
+krass_ctx_t *krass_init(int reserve, int step, int mipmap_levels) {
 	assert(reserve > 0);
 	krass_ctx_t *ctx = (krass_ctx_t *)kr_malloc(sizeof(krass_ctx_t));
 	assert(ctx != NULL);
@@ -66,6 +67,7 @@ krass_ctx_t *krass_init(int reserve, int step) {
 	assert(ctx->assets != NULL);
 	ctx->cap = reserve;
 	ctx->step = (step > 1) ? step : 1;
+	ctx->mipmap_levels = (mipmap_levels > 1) ? mipmap_levels : 1;
 	ctx->cursor = -1;
 	return ctx;
 }
@@ -185,24 +187,25 @@ void krass_finalize(krass_ctx_t *ctx) {
 static void render_image(krass_ctx_t *ctx) {
 	krass_image_t *img = &ctx->assets[ctx->cursor].data.image;
 	krass_rect_t *r = &ctx->canvas.rects[img->pack_id];
-	kr_g2_scissor(r->x, r->y, r->w, r->h);
+	// TODO: figure out why scissor doesn't work as expected
+	// kr_g2_scissor(r->x, r->y, r->w, r->h);
 	img->cb(ctx->cursor, r->x, r->y, img->data);
-	kr_g2_disable_scissor();
+	// kr_g2_disable_scissor();
 }
 
-static void invert_pixels(uint8_t **data, int width, int height) {
+static uint8_t *invert_pixels(uint8_t *data, int width, int height) {
 	uint8_t *inverted_pixels = (uint8_t *)kr_malloc(width * height * 4);
 	assert(inverted_pixels != NULL);
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
 			for (int c = 0; c < 4; ++c) {
 				inverted_pixels[y * width * 4 + x * 4 + c] =
-				    *data[(height - 1 - y) * width * 4 + x * 4 + c];
+				    data[(height - 1 - y) * width * 4 + x * 4 + c];
 			}
 		}
 	}
 	kr_free(data);
-	*data = inverted_pixels;
+	return inverted_pixels;
 }
 
 static void create_texture(krass_ctx_t *ctx) {
@@ -212,7 +215,7 @@ static void create_texture(krass_ctx_t *ctx) {
 	assert(data != NULL);
 	kinc_g4_render_target_get_pixels(&ctx->target, data);
 	kinc_g4_restore_render_target();
-	if (kinc_g4_render_targets_inverted_y()) invert_pixels(&data, width, height);
+	if (kinc_g4_render_targets_inverted_y()) data = invert_pixels(data, width, height);
 #ifndef NDEBUG
 	stbi_write_png("test.png", width, height, 4, data, width * 4);
 #endif
@@ -224,7 +227,9 @@ static void create_texture(krass_ctx_t *ctx) {
 	kinc_image_destroy(&img);
 	kr_free(data);
 	ctx->img = (kr_image_t *)kr_malloc(sizeof(kr_image_t));
+	assert(ctx->img != NULL);
 	kr_image_from_texture(ctx->img, tex, (float)width, (float)height);
+	kr_image_generate_mipmaps(ctx->img, ctx->mipmap_levels);
 }
 
 bool krass_tick(krass_ctx_t *ctx) {
@@ -238,10 +243,15 @@ bool krass_tick(krass_ctx_t *ctx) {
 	if (ctx->cursor == 0) {
 		kinc_g4_render_target_init_with_multisampling(&ctx->target, width, height,
 		                                              KINC_G4_RENDER_TARGET_FORMAT_32BIT, 16, 0, 1);
+		ctx->first = true;
 	}
 	if (ctx->cursor < ctx->top) {
 		kinc_g4_render_target_t *t = {&ctx->target};
 		kinc_g4_set_render_targets(&t, 1);
+		if (ctx->first) {
+			kinc_g4_clear(KINC_G4_CLEAR_COLOR, 0x0, -1, 0);
+			ctx->first = false;
+		}
 		kr_g2_begin(0);
 		kr_g2_set_render_target_dim(width, height);
 		for (int i = 0; i < ctx->step; ++i) {
@@ -250,10 +260,11 @@ bool krass_tick(krass_ctx_t *ctx) {
 			else if (ctx->assets[ctx->cursor].type == KRASS_TYPE_IMAGE)
 				render_image(ctx);
 			++ctx->cursor;
-			if (ctx->cursor >= ctx->top) return true;
+			if (ctx->cursor >= ctx->top) break;
 		}
 		kr_g2_reset_render_target_dim();
 		kr_g2_end();
+		kinc_g4_restore_render_target();
 	}
 	else if (ctx->cursor == ctx->top) {
 		create_texture(ctx);

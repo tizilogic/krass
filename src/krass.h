@@ -33,10 +33,11 @@ typedef void (*krass_draw_callback_t)(int id, float x, float y, void *data);
  *
  * @param reserve How many quads to reserve
  * @param step How many quads to process per call to tick
+ * @param mipmap_levels How many mipmap_levels to generate for the packed texture
  *
  * @return krass_ctx_t*
  */
-krass_ctx_t *krass_init(int reserve, int step);
+krass_ctx_t *krass_init(int reserve, int step, int mipmap_levels);
 
 /**
  * @brief Destroy a previously initialized context
