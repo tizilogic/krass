@@ -187,10 +187,9 @@ void krass_finalize(krass_ctx_t *ctx) {
 static void render_image(krass_ctx_t *ctx) {
 	krass_image_t *img = &ctx->assets[ctx->cursor].data.image;
 	krass_rect_t *r = &ctx->canvas.rects[img->pack_id];
-	// TODO: figure out why scissor doesn't work as expected
-	// kr_g2_scissor(r->x, r->y, r->w, r->h);
+	kr_g2_scissor(r->x, r->y, r->w, r->h);
 	img->cb(ctx->cursor, r->x, r->y, img->data);
-	// kr_g2_disable_scissor();
+	kr_g2_disable_scissor();
 }
 
 static uint8_t *invert_pixels(uint8_t *data, int width, int height) {
