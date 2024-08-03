@@ -15,8 +15,10 @@ jobs:
     strategy:
       matrix:
         path:
-          - 'src'
-          - 'tests'
+          - check: 'src'
+            exclude: '(stb)'
+          - check: 'tests'
+            exclude: ''
     steps:
     - uses: actions/checkout@v4
     - name: Run clang-format style check for C/C++/Protobuf programs.
