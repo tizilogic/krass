@@ -1,3 +1,4 @@
 tests/bin/*
 !tests/bin/*.ttf
 !tests/bin/*.k
+build

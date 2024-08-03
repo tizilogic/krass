@@ -24,4 +24,4 @@ jobs:
     - name: Compile and run Test 1
       run: .\krink\Kinc\make.bat -v vs2022 -g direct3d11 --run
     - name: Check Test 1
-      run: magick compare -verbose -metric mse -fuzz 10% .\tests\compare\basic.png .\tests\bin\basic.png NULL
+      run: magick compare -verbose -metric mae .\tests\compare\basic_d3d11.png .\tests\bin\basic.png NULL
