@@ -1,3 +1,5 @@
+[![clang-format Check](https://github.com/tizilogic/krass/actions/workflows/clang-format.yml/badge.svg)](https://github.com/tizilogic/krass/actions/workflows/clang-format.yml) [![Linux (OpenGL)](https://github.com/tizilogic/krass/actions/workflows/linux-opengl.yml/badge.svg)](https://github.com/tizilogic/krass/actions/workflows/linux-opengl.yml) [![Windows (Direct3D 11)](https://github.com/tizilogic/krass/actions/workflows/windows-direct3d11.yml/badge.svg)](https://github.com/tizilogic/krass/actions/workflows/windows-direct3d11.yml)
+
 # krass - Single texture runtime asset packer for krink
 
 Library to pack assets such as fonts and images into a single texture at runtime with the goal to
