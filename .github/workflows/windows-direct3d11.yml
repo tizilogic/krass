@@ -1,0 +1,27 @@
+name: Windows (Direct3D 11)
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Get Submodules
+      run: .\get_dlc.bat
+    - name: Get ImageMagick
+      run: |
+        choco install -y imagemagick.app --no-progress
+        Get-ChildItem -Path "${env:ProgramFiles}" | Where-Object {($_.Name -Like 'ImageMagick*')} | % { $_.FullName } | Out-File -Append -FilePath $env:GITHUB_PATH -Encoding utf8
+    - name: Compile and run Test 1
+      run: .\make.bat -v vs2022 -g direct3d11 --run
+    - name: Check Test 1
+      run: magick compare -metric mae .\tests\compare\basic.png .\tests\bin\basic.png difference.png
