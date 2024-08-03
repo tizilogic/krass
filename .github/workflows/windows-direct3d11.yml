@@ -22,6 +22,6 @@ jobs:
         choco install -y imagemagick.app --no-progress
         Get-ChildItem -Path "${env:ProgramFiles}" | Where-Object {($_.Name -Like 'ImageMagick*')} | % { $_.FullName } | Out-File -Append -FilePath $env:GITHUB_PATH -Encoding utf8
     - name: Compile and run Test 1
-      run: .\make.bat -v vs2022 -g direct3d11 --run
+      run: .\krink\Kinc\make.bat -v vs2022 -g direct3d11 --run
     - name: Check Test 1
       run: magick compare -metric mae .\tests\compare\basic.png .\tests\bin\basic.png difference.png
