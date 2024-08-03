@@ -82,8 +82,7 @@ static bool internal_fa_place(free_area_t *a, kr_vec2_t *pos, float w, float h) 
 			pos->x = fa_left;
 			pos->y = fa_top;
 
-			if (re_right + KRASS_MIN_FREE >= fa_right &&
-			    re_bottom + KRASS_MIN_FREE >= fa_bottom) {
+			if (re_right + KRASS_MIN_FREE >= fa_right && re_bottom + KRASS_MIN_FREE >= fa_bottom) {
 				// Consume entire rect
 				internal_fa_shift_left(a, current);
 			}
