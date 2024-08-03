@@ -76,7 +76,7 @@ static void update(void *unused) {
 	                                              KINC_G4_RENDER_TARGET_FORMAT_32BIT, 16, 0, 1);
 	kinc_g4_render_target_t *targets = {&target};
 	kinc_g4_set_render_targets(&targets, 1);
-	kinc_g4_clear(KINC_G4_CLEAR_COLOR, 0x0, 0, 0);
+	kinc_g4_clear(KINC_G4_CLEAR_COLOR, 0xff000000, 0, 0);
 	kr_g2_begin(0);
 	kr_g2_set_render_target_dim(WINDOW_WIDTH, WINDOW_HEIGHT);
 	kr_g2_set_color(0xffffffff);
