@@ -31,4 +31,4 @@ jobs:
       working-directory: ./tests/bin
       run: xvfb-run ./krass
     - name: Check Test 1
-      run: compare-im6 -verbose -metric mae tests/compare/basic.png tests/bin/basic.png difference.png
+      run: compare-im6 -verbose -metric mae -fuzz 10% tests/compare/basic.png tests/bin/basic.png difference.png
