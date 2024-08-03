@@ -72,8 +72,8 @@ static void create_png(kinc_g4_render_target_t *target) {
 static void update(void *unused) {
 	kinc_g4_begin(0);
 	kinc_g4_render_target_t target;
-	kinc_g4_render_target_init_with_multisampling(&target, WINDOW_WIDTH, WINDOW_HEIGHT,
-	                                              KINC_G4_RENDER_TARGET_FORMAT_32BIT, 16, 0, 1);
+	kinc_g4_render_target_init(&target, WINDOW_WIDTH, WINDOW_HEIGHT,
+	                           KINC_G4_RENDER_TARGET_FORMAT_32BIT, 16, 0);
 	kinc_g4_render_target_t *targets = {&target};
 	kinc_g4_set_render_targets(&targets, 1);
 	kinc_g4_clear(KINC_G4_CLEAR_COLOR, 0xff000000, 0, 0);
