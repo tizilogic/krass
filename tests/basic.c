@@ -82,18 +82,20 @@ static void update(void *unused) {
 	kr_g2_set_color(0xffffffff);
 	for (int x = 0; x < 16; ++x)
 		for (int y = 0; y < 8; ++y) {
-            int id = CIRCLE0 + ((x + y * 16) % 5);
-            krass_draw(krass_ctx, assets[id], x * 32, y * 32);
-        }
-    krass_draw(krass_ctx, assets[IMAGE0], 10, 10);
-    krass_draw(krass_ctx, assets[IMAGE1], 266, 10);
-    krass_draw(krass_ctx, assets[IMAGE2], 10, 128);
-    krass_draw(krass_ctx, assets[IMAGE3], 266, 128);
+			int id = CIRCLE0 + ((x + y * 16) % 5);
+			krass_draw(krass_ctx, assets[id], x * 32, y * 32);
+		}
+	krass_draw(krass_ctx, assets[IMAGE0], 10, 10);
+	krass_draw(krass_ctx, assets[IMAGE1], 266, 10);
+	krass_draw(krass_ctx, assets[IMAGE2], 10, 128);
+	krass_draw(krass_ctx, assets[IMAGE3], 266, 128);
 	font = krass_get_font(krass_ctx, assets[FONT]);
 	kr_g2_set_font(font, FONT_SIZE);
 	kr_g2_set_color(0xff888888);
 	for (int i = 0; i < 10; ++i) {
-		kr_g2_draw_string(sample_text[i], 0, i * (FONT_SIZE + kr_ttf_line_gap(font, FONT_SIZE)) + kr_ttf_baseline(font, FONT_SIZE));
+		kr_g2_draw_string(sample_text[i], 0,
+		                  i * (FONT_SIZE + kr_ttf_line_gap(font, FONT_SIZE)) +
+		                      kr_ttf_baseline(font, FONT_SIZE));
 	}
 	kr_g2_reset_render_target_dim();
 	kr_g2_end();
@@ -110,7 +112,7 @@ static void pre_update(void *unused) {
 	if (!krass_tick(krass_ctx)) kinc_set_update_callback(update, NULL);
 
 	kr_g2_begin(0);
-    kr_g2_clear(0xff000000);
+	kr_g2_clear(0xff000000);
 	kr_g2_set_color(0xffffffff);
 	kr_g2_fill_rect(0, 112, 511 * krass_progress(krass_ctx) + 1, 30);
 	kr_g2_end();
@@ -140,10 +142,10 @@ int kickstart(int argc, char **argv) {
 
 	void *mem = malloc(10 * 1024 * 1024);
 	kr_init(mem, 10 * 1024 * 1024, NULL, 0);
-    kr_g2_init();
+	kr_g2_init();
 	kr_image_init(&image);
 	kr_image_load(&image, IMAGE_PATH, false);
-    kr_image_generate_mipmaps(&image, 30);
+	kr_image_generate_mipmaps(&image, 30);
 	krass_ctx = krass_init(15, 2, 30);
 	for (int i = 0; i < 5; ++i)
 		assets[CIRCLE0 + i] = krass_reserve_quad(
