@@ -12,9 +12,8 @@ project.setDebugDir('tests/bin');
 
 if (typeof noKrinkPlease === 'undefined') {
     await project.addProject('krink');
+    project.addDefine("KR_FULL_RGBA_FONTS");  // assume krink as submodule is only needed for testing purposes
 }
-
-project.addDefine("KR_FULL_RGBA_FONTS");
 
 project.setCStd('c99');
 project.setCppStd('c++11');
