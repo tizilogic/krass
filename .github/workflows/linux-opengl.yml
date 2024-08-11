@@ -23,8 +23,6 @@ jobs:
       run: sudo apt install imagemagick xvfb
     - name: Get Submodules
       run: ./get_dlc
-    - name: Temporary OpenGL scissor patch
-      run: git -C krink/Kinc apply ../../openglscissor.patch
     - name: Compile
       run: ./krink/Kinc/make -g opengl --compile
     - name: Run Test 1
